@@ -1,4 +1,4 @@
-# pydirectinput is used for sending commands
+# pydirectinput is used for sending commands (only works for Windows os)
 # import pydirectinput
 import pyautogui
 import numpy as np
@@ -6,13 +6,18 @@ import numpy as np
 import pytesseract
 import time
 import cv2
-
 from matplotlib import pyplot as plt
 # environment components
 from gym.spaces import Box, Discrete
 from gym import Env
 # MSS is used for screen capture
 from mss import mss
+
+import os
+# BaseCallBack for saving models
+from stable_baselines3.common.callbacks import BaseCallback
+# check environment
+from stable_baselines3.common import env_checker
 
 
 # create game environment
@@ -107,7 +112,6 @@ class WebGame(Env):
 # Testing
 """
 env = WebGame()
-
 obs = env.get_observation()
 done, done_cap = env.get_done()
 
@@ -120,12 +124,36 @@ plt.show()
 """
 
 # Play 10 games
-for episode in range(10):
+env = WebGame()
+obs = env.get_observation()
+for run in range(10):
     obs = env.reset()
     done = False
     total_reward   = 0
     while not done:
-        obs, reward,  done, info =  env.step(env.action_space.sample())
+        obs, reward, done, info =  env.step(env.action_space.sample())
         total_reward  += reward
-    print('Total Reward for episode {} is {}'.format(episode, total_reward))
+    print('total reward for run {} is {}'.format(run, total_reward))
 
+# check that the environment is okay
+env_checker.check_env(env)
+
+# CallBack class for saving the model
+class TrainAndLoggingCallBack(BaseCallback):
+    def __init__(self, check_freq, save_path, verbose=1):
+        super(TrainAndLoggingCallBack, self).__init__(verbose)
+        self.check_freq = check_freq
+        self.save_path = save_path
+
+    def _init_callback(self):
+        if self.save_path is not None:
+            os.makedirs(self.save_path, exist_ok=True)
+
+    def _on_step(self):
+        if self.n_calls & self.check_freq == 0:
+            model_path = os.path.join(self.save_path, 'best_model_{}'.format(self.n_calls))
+            self.model.save(model_path)
+        return True
+
+CHECKPOINT_DIR = './train/'
+LOG_DIR = '/logs/'
