@@ -43,8 +43,20 @@ class WebGame(Env):
         pass
     # get a part of the game
     def get_observation(self):
-        pass
+        # get screen capture of the game
+        raw = np.array(self.cap.grab(self.game_location))[:,:,:3].astype(np.uint8)
+        # grayscale
+        gray = cv2.cvtColor(raw, cv2.COLOR_BGR2GRAY)
+        # resize
+        resized = cv2.resize(gray, (100,83))
+        # add channels first
+        channel = np.reshape(resized, (1,83,100))
+        return channel
     # get the game over text
     def get_done(self):
         pass
 
+env = WebGame()
+print(env.get_observation())
+plt.imshow(env.get_observation()[0])
+plt.show()
