@@ -52,13 +52,27 @@ class WebGame(Env):
 
     # visualize the game
     def render(self):
+        img = np.array(self.cap.grab(self.game_location))
+        cv2.imshow('Game', img)
+        key = cv2.waitKey(1)
+        while key not in [ord('q'), 27]:  # wait for 'q' or 'ESC' key
+            key = cv2.waitKey(1)
+        self.close()
+        """
         cv2.imshow('Game', np.array(self.cap.grab(self.game_location)))
         if cv2.waitKey(0) & 0xFF == ord('q'):
             self.close()
+        """
 
     # restart the game
     def reset(self):
-        pass
+        # wait 1 second
+        time.sleep(1)
+        # click on corner
+        pyautogui.click(x=150, y=150)
+        # hit space to rerun the game
+        pyautogui.press('space')
+        return self.get_observation()
 
     # close the observation
     def close(self):
@@ -90,7 +104,8 @@ class WebGame(Env):
         return done, done_cap
 
 env = WebGame()
-env.render()
+env.reset()
+# env.render()
 
 # Tests
 """
