@@ -28,19 +28,40 @@ class WebGame(Env):
         self.cap = mss()
         self.game_location = {'top':300, 'left':0, 'width':600, 'height': 500}
         self.done_location = {'top':405, 'left':630, 'width':660, 'height': 70}
+
     # called to do something in the game
     def step(self, action):
         # action key: 0 = jump, 1 = duck, 2 = no action (no op)
-        pass
+        action_map = {
+            0: 'space',
+            1: 'down',
+            2: 'no_op'
+        }
+        if action != 2:
+            pyautogui.press(action_map[action])
+
+        # checking if game is done
+        done, done_cap = self.get_done()
+        # getting next observation
+        new_observ = self.get_observation()
+        # reward (getting a point for every frame we stay alive)
+        reward = 1
+        # info dict
+        info = {}
+        return new_observ, reward, done, info
+
     # visualize the game
     def render(self):
         pass
+
     # restart the game
     def reset(self):
         pass
+
     # close the observation
     def close(self):
         pass
+
     # get a part of the game
     def get_observation(self):
         # get screen capture of the game
@@ -52,6 +73,7 @@ class WebGame(Env):
         # add channels first
         channel = np.reshape(resized, (1,83,100))
         return channel
+
     # get the game over text using OCR
     def get_done(self):
         # get done screen
