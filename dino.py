@@ -52,7 +52,9 @@ class WebGame(Env):
 
     # visualize the game
     def render(self):
-        pass
+        cv2.imshow('Game', np.array(self.cap.grab(self.game_location)))
+        if cv2.waitKey(0) & 0xFF == ord('q'):
+            self.close()
 
     # restart the game
     def reset(self):
@@ -60,7 +62,7 @@ class WebGame(Env):
 
     # close the observation
     def close(self):
-        pass
+        cv2.destroyAllWindows()
 
     # get a part of the game
     def get_observation(self):
@@ -86,6 +88,9 @@ class WebGame(Env):
         if res in done_str:
             done = True
         return done, done_cap
+
+env = WebGame()
+env.render()
 
 # Tests
 """
