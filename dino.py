@@ -52,11 +52,29 @@ class WebGame(Env):
         # add channels first
         channel = np.reshape(resized, (1,83,100))
         return channel
-    # get the game over text
+    # get the game over text using OCR
     def get_done(self):
-        pass
+        # get done screen
+        done_cap = np.array(self.cap.grab(self.done_location))[:,:,:3].astype(np.uint8)
+        # valid done texts
+        done_str = ['GAME', 'GoAH']
+        # apply OCR
+        done = False
+        res = pytesseract.image_to_string(done_cap)[:4]
+        if res in done_str:
+            done = True
+        return done, done_cap
 
+# Tests
+"""
 env = WebGame()
 print(env.get_observation())
+done, done_cap = env.get_done()
+print(done)
+print(done_cap)
+
 plt.imshow(env.get_observation()[0])
 plt.show()
+plt.imshow(done_cap)
+plt.show()
+"""
