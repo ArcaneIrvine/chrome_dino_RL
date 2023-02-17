@@ -24,6 +24,10 @@ class WebGame(Env):
         self.observation_space = Box(low=0, high=255, shape=(1, 83, 100), dtype=np.uint8)
         # Discrete(3) for 3 different actions
         self.action_space = Discrete(3)
+        # define extraction parameters
+        self.cap = mss()
+        self.game_location = {'top':300, 'left':0, 'width':600, 'height': 500}
+        self.done_location = {'top':405, 'left':630, 'width':660, 'height': 70}
     # called to do something in the game
     def step(self, action):
         # action key: 0 = jump, 1 = duck, 2 = no action (no op)
