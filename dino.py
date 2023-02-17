@@ -103,20 +103,29 @@ class WebGame(Env):
             done = True
         return done, done_cap
 
-env = WebGame()
-env.reset()
-# env.render()
 
-# Tests
+# Testing
 """
 env = WebGame()
-print(env.get_observation())
-done, done_cap = env.get_done()
-print(done)
-print(done_cap)
 
-plt.imshow(env.get_observation()[0])
+obs = env.get_observation()
+done, done_cap = env.get_done()
+
+print(done)
+
+plt.imshow(obs[0])
 plt.show()
 plt.imshow(done_cap)
 plt.show()
 """
+
+# Play 10 games
+for episode in range(10):
+    obs = env.reset()
+    done = False
+    total_reward   = 0
+    while not done:
+        obs, reward,  done, info =  env.step(env.action_space.sample())
+        total_reward  += reward
+    print('Total Reward for episode {} is {}'.format(episode, total_reward))
+
