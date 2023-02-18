@@ -1,4 +1,4 @@
-# DINO_rl
+# Reinforced Learning Dino Chrome
 A reinforced learning AI model for chrome Dino game using Python and Deep learning
 
 ## Model
