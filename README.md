@@ -14,10 +14,10 @@ For the model i used a DQN (Deep Q-Network) algorithm with a CnnPolicy on my gam
 **This project was done for educational purposes and getting intoduced to reinforced machine learning methods. That means that for optimal results alot more training steps are required but with this sample it is still visible that there is a significant improvement.
 ### Before training
 ![untrained](https://user-images.githubusercontent.com/75722160/219855772-61afcb5a-b695-4c07-a8af-bcb30ae8694f.png)<br />
-giving us an average score of: 31.6
+giving us an average 5 runs score of: 31.6
 ### After training
 ![trained](https://user-images.githubusercontent.com/75722160/219855773-1b0bc64a-aca8-413e-8eb5-ee5a9501f593.png)<br />
-giving us an average score of: 91.2
+giving us an average 5 runs score of: 91.2
 
 ## Requirements
 - stable_baselines3
