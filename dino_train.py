@@ -18,6 +18,8 @@ import os
 from stable_baselines3.common.callbacks import BaseCallback
 # check environment
 from stable_baselines3.common import env_checker
+# import DQN algorithm (Deep Q-Network)
+from stable_baselines3 import DQN
 
 
 # create game environment
@@ -108,10 +110,10 @@ class WebGame(Env):
             done = True
         return done, done_cap
 
-
-# Testing
 """
+# Testing
 env = WebGame()
+
 obs = env.get_observation()
 done, done_cap = env.get_done()
 
@@ -126,18 +128,18 @@ plt.show()
 # Play 10 games
 env = WebGame()
 obs = env.get_observation()
-for run in range(10):
+for run in range(5):
     obs = env.reset()
     done = False
-    total_reward   = 0
+    total_reward = 0
     while not done:
         obs, reward, done, info =  env.step(env.action_space.sample())
         total_reward  += reward
     print('total reward for run {} is {}'.format(run, total_reward))
 
+"""
 # check that the environment is okay
 env_checker.check_env(env)
-
 # CallBack class for saving the model
 class TrainAndLoggingCallBack(BaseCallback):
     def __init__(self, check_freq, save_path, verbose=1):
@@ -150,10 +152,17 @@ class TrainAndLoggingCallBack(BaseCallback):
             os.makedirs(self.save_path, exist_ok=True)
 
     def _on_step(self):
-        if self.n_calls & self.check_freq == 0:
-            model_path = os.path.join(self.save_path, 'best_model_{}'.format(self.n_calls))
+        if self.n_calls % self.check_freq == 0:
+            model_path =   os.path.join(self.save_path, 'best_model_{}'.format(self.n_calls))
             self.model.save(model_path)
         return True
 
 CHECKPOINT_DIR = './train/'
-LOG_DIR = '/logs/'
+LOG_DIR = './logs/'
+# save model to CHECKPOINT_DIR every 1000 steps
+callback = TrainAndLoggingCallBack(check_freq=1000, save_path=CHECKPOINT_DIR)
+# create the DQN model
+model = DQN('CnnPolicy', env, tensorboard_log=LOG_DIR, verbose=1, buffer_size=600000, learning_starts=1000)
+# training
+model.learn(total_timesteps=10000, callback=callback)
+"""
